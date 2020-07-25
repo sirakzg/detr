@@ -1,0 +1,16 @@
+FROM ubuntu
+
+# Set our env variable
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update
+RUN apt-get install -y python3 python3-pip
+RUN apt-get clean
+
+RUN pip3 install gluoncv mxnet
+
+WORKDIR /
+COPY mscoco.py .
+
+CMD mkdir -m 777 /data/coco
+CMD python3 mscoco.py --download-dir /data/coco
