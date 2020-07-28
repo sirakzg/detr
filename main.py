@@ -194,7 +194,7 @@ def main(args):
     # SG: Making mixed precision a command line optional step
     if args.mixed_precision :
         print("Mixed Precision Training Selected.")
-        model, optimizer = amp.initialize(model, optimizer)
+        model, optimizer = amp.initialize(model, optimizer, opt_level="O1")
 
 
     print("Start training")
