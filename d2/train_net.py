@@ -27,7 +27,7 @@ from detectron2.evaluation import COCOEvaluator, verify_results
 from detectron2.solver.build import maybe_add_gradient_clipping
 
 #SG: adding AMP support for mixed precision training
-from apex import amp
+import amp
 
 class Trainer(DefaultTrainer):
     """

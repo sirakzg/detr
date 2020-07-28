@@ -17,7 +17,7 @@ from engine import evaluate, train_one_epoch
 from models import build_model
 
 #SG: adding AMP support for mixed precision training
-from apex import amp
+import amp
 
 def get_args_parser():
     parser = argparse.ArgumentParser('Set transformer detector', add_help=False)
