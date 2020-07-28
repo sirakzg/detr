@@ -16,6 +16,8 @@ from datasets import build_dataset, get_coco_api_from_dataset
 from engine import evaluate, train_one_epoch
 from models import build_model
 
+#SG: adding AMP support for mixed precision training
+from apex import amp
 
 def get_args_parser():
     parser = argparse.ArgumentParser('Set transformer detector', add_help=False)
@@ -93,6 +95,7 @@ def get_args_parser():
     parser.add_argument('--start_epoch', default=0, type=int, metavar='N',
                         help='start epoch')
     parser.add_argument('--eval', action='store_true')
+    parser.add_argument('--mixed_precision', action='store_true') # SG Added mixed precision cmd line arg
     parser.add_argument('--num_workers', default=2, type=int)
 
     # distributed training parameters
@@ -187,6 +190,12 @@ def main(args):
         if args.output_dir:
             utils.save_on_master(coco_evaluator.coco_eval["bbox"].eval, output_dir / "eval.pth")
         return
+
+    # SG: Making mixed precision a command line optional step
+    if args.mixed_precision :
+        print("Mixed Precision Training Selected.")
+        model, optimizer = amp.initialize(model, optimizer)
+
 
     print("Start training")
     start_time = time.time()

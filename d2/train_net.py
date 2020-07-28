@@ -26,6 +26,8 @@ from detectron2.evaluation import COCOEvaluator, verify_results
 
 from detectron2.solver.build import maybe_add_gradient_clipping
 
+#SG: adding AMP support for mixed precision training
+from apex import amp
 
 class Trainer(DefaultTrainer):
     """
@@ -58,7 +60,11 @@ class Trainer(DefaultTrainer):
         self._write_metrics(metrics_dict)
 
         self.optimizer.zero_grad()
-        losses.backward()
+
+        # SG Adding support for AMP loss scaling
+        with amp.scale_loss(loss, optimizer) as scaled_loss:
+            scaled_loss.backward()
+
         if self.clip_norm_val > 0.0:
             torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.clip_norm_val)
         self.optimizer.step()
