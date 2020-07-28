@@ -55,7 +55,7 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
 
 
         # SG Adding support for AMP loss scaling
-        with amp.scale_loss(loss, optimizer) as scaled_loss:
+        with amp.scale_loss(losses, optimizer) as scaled_loss:
             scaled_loss.backward()
 
         if max_norm > 0:

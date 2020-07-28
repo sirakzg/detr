@@ -62,7 +62,7 @@ class Trainer(DefaultTrainer):
         self.optimizer.zero_grad()
 
         # SG Adding support for AMP loss scaling
-        with amp.scale_loss(loss, optimizer) as scaled_loss:
+        with amp.scale_loss(losses, optimizer) as scaled_loss:
             scaled_loss.backward()
 
         if self.clip_norm_val > 0.0:

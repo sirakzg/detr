@@ -17,6 +17,7 @@ from engine import evaluate, train_one_epoch
 from models import build_model
 
 #SG: adding AMP support for mixed precision training
+import apex
 from apex import amp
 
 def get_args_parser():
@@ -126,9 +127,9 @@ def main(args):
 
     model_without_ddp = model
     if args.distributed:
-        model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.gpu])
-        model_without_ddp = model.module
-    n_parameters = sum(p.numel() for p in model.parameters() if p.requires_grad)
+        tmp_model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.gpu])
+        model_without_ddp = tmp_model.module
+    n_parameters = sum(p.numel() for p in tmp_model.parameters() if p.requires_grad)
     print('number of params:', n_parameters)
 
     param_dicts = [
@@ -149,8 +150,9 @@ def main(args):
     # SG: Making mixed precision a command line optional step
     if args.mixed_precision :
         print("Mixed Precision Training Selected.")
-        model, optimizer = amp.initialize(model, optimizer, opt_level="O1")
+        model, optimizer = amp.initialize(model, optimizer, opt_level="O0")
 
+    model = apex.parallel.DistributedDataParallel(model)
 
     if args.distributed:
         sampler_train = DistributedSampler(dataset_train)
