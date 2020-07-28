@@ -145,6 +145,13 @@ def main(args):
     dataset_train = build_dataset(image_set='train', args=args)
     dataset_val = build_dataset(image_set='val', args=args)
 
+
+    # SG: Making mixed precision a command line optional step
+    if args.mixed_precision :
+        print("Mixed Precision Training Selected.")
+        model, optimizer = amp.initialize(model, optimizer, opt_level="O1")
+
+
     if args.distributed:
         sampler_train = DistributedSampler(dataset_train)
         sampler_val = DistributedSampler(dataset_val, shuffle=False)
@@ -190,11 +197,6 @@ def main(args):
         if args.output_dir:
             utils.save_on_master(coco_evaluator.coco_eval["bbox"].eval, output_dir / "eval.pth")
         return
-
-    # SG: Making mixed precision a command line optional step
-    if args.mixed_precision :
-        print("Mixed Precision Training Selected.")
-        model, optimizer = amp.initialize(model, optimizer, opt_level="O1")
 
 
     print("Start training")
