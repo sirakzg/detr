@@ -14,7 +14,7 @@ from datasets.coco_eval import CocoEvaluator
 from datasets.panoptic_eval import PanopticEvaluator
 
 #SG: adding AMP support for mixed precision training
-import amp
+from apex import amp
 
 def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
                     data_loader: Iterable, optimizer: torch.optim.Optimizer,
