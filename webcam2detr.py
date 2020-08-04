@@ -103,7 +103,7 @@ def get_args_parser():
 
 	parser.add_argument('--output_dir', default='',
 		        help='path where to save, empty for no saving')
-	parser.add_argument('--device', default='cuda:0',
+	parser.add_argument('--device', default='cuda',
 		        help='device to use for training / testing')
 	parser.add_argument('--seed', default=42, type=int)
 	parser.add_argument('--resume', default='', help='resume from checkpoint')
@@ -160,10 +160,13 @@ if __name__ == '__main__':
 	torch.cuda.set_device(0)
 	device = torch.device(args.device)
 
+
+	# using pretrained model for tests
+	#model = torch.hub.load("facebookresearch/detr","detr_resnet50", pretrained=True)
+
+	
 	print("building model")    
 	model,_,_ = build_model(args)
-	model.to(device)
-	#model.cuda()
 
 
 	print("loading checkpoint")
@@ -171,13 +174,15 @@ if __name__ == '__main__':
 
 	print("loading model state")
 	model.load_state_dict(checkpoint["model"])
+	
+
 
 	#print("check modules")
 	#print(model.backbone[0].body.conv1)
 
-	for module in model.modules() :
-		print(module)
-	exit(0)
+	model.eval()
+	#model.to(device)
+	#model = model.cuda()
 
 	cap = cv2.VideoCapture(0)
 	cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
@@ -205,9 +210,11 @@ if __name__ == '__main__':
 
 		# propagate through the model
 		sample = transform(img).unsqueeze(0)
-		#sample.cuda() 
-		sample.to(device)
-		outputs = model(sample)
+		#sample = sample.cuda() 
+		#sample.to(device)
+
+		with torch.no_grad() :
+			outputs = model(sample)
 
 
 		# keep only predictions with 0.7+ confidence
