@@ -209,7 +209,6 @@ if __name__ == '__main__':
 		sample.to(device)
 		outputs = model(sample)
 
-
 		# keep only predictions with 0.7+ confidence
 		probas = outputs['pred_logits'].softmax(-1)[0, :, :-1]
 		keep = probas.max(-1).values > 0.7
@@ -217,13 +216,9 @@ if __name__ == '__main__':
 		# convert boxes from [0; 1] to image scales
 		bboxes_scaled = rescale_bboxes(outputs['pred_boxes'][0, keep], img.size)
 
-
 		# Display the resulting frame
 		plot_results(img, probas[keep], bboxes_scaled)
-		#cv2.imshow('frame',frame)
 
-
-		#time.sleep(20)
 
 	# When everything done, release the capture
 	cap.release()
