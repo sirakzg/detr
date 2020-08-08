@@ -1,3 +1,9 @@
+## W251 Whitepaper:
+https://github.com/sirakzg/detr/blob/master/Sirak_w251_DETR_witepaper.pdf
+
+## W251 Final Presnentation:
+https://github.com/sirakzg/detr/blob/master/W251%20Sirak%20Ghebremusse%20Final%20Presentation%20_%20Aug%204.pdf
+
 **DE⫶TR**: End-to-End Object Detection with Transformers
 ========
 PyTorch training code and pretrained models for **DETR** (**DE**tection **TR**ansformer).
